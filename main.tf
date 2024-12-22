@@ -71,13 +71,12 @@ resource "aws_cloudfront_distribution" "static_web" {
 #     aws = aws.us-east-1
 #   }
 
-#   domain_name  = local.alternate_domain_name
-#   zone_id      = data.aws_route53_zone.sctp_zone.id
+#   domain_name = local.alternate_domain_name
+#   zone_id     = data.aws_route53_zone.sctp_zone.id
 
 #   validation_method = "DNS"
 
 #   wait_for_validation = true
-
 # }
 
 # ## activity 2: custom domain
@@ -95,8 +94,8 @@ resource "aws_cloudfront_distribution" "static_web" {
 
 # ## activity 2: waf acl
 # resource "aws_wafv2_web_acl" "cloudfront" {
-#   name        = "${var.name_prefix}-cloudfront-acl"
-#   scope       = "CLOUDFRONT"
+#   name  = "${var.name_prefix}-cloudfront-acl"
+#   scope = "CLOUDFRONT"
 
 #   provider = aws.us-east-1
 
@@ -104,9 +103,30 @@ resource "aws_cloudfront_distribution" "static_web" {
 #     allow {}
 #   }
 
+#   rule {
+#     name     = "AWS-AWSManagedRulesCommonRuleSet"
+#     priority = 1
+#     override_action {
+#       none {}
+#     }
+
+#     statement {
+#       managed_rule_group_statement {
+#         name        = "AWSManagedRulesCommonRuleSet"
+#         vendor_name = "AWS"
+#       }
+#     }
+
+#     visibility_config {
+#       cloudwatch_metrics_enabled = true
+#       metric_name                = "${var.name_prefix}-commonrule-metric"
+#       sampled_requests_enabled   = true
+#     }
+#   }
+
 #   visibility_config {
 #     cloudwatch_metrics_enabled = false
-#     metric_name                = "${var.name_prefix}-waf-metric"
+#     metric_name                = "${var.name_prefix}-wafacl-metric"
 #     sampled_requests_enabled   = false
 #   }
 # }
